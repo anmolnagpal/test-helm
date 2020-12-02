@@ -1,0 +1,16 @@
+{{- if .Values.udp -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    {{- include "ingress-nginx.labels" . | nindent 4 }}
+    app.kubernetes.io/component: controller
+  data:
+    http-snippet: |
+      server {
+        listen 2443;
+        return 308 https://$host$request_uri;
+      }
+    proxy-real-ip-cidr: {{ .Values.proxy_realip_cidr }}
+    use-forwarded-headers: 'true'
+{{- end }}
